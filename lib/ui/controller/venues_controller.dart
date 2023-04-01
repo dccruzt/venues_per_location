@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,10 +25,22 @@ class VenuesCubit extends Cubit<VenuesState> {
 
   final UpdateLocationUseCase updateLocationUseCase;
 
-  void init() => updateLocationUseCase
-      .call()
-      .then((venues) => emit(state.copyWith(venues: venues)))
-      .catchError((error) => emit(state.copyWith(error: error)));
+  late StreamSubscription<List<VenueEntity>> subscription;
+
+  void init() {
+    subscription = updateLocationUseCase.call().listen((venues) {
+      print('>>> HOLA');
+      emit(state.copyWith(venues: venues));
+    });
+    // .then((venues) => emit(state.copyWith(venues: venues)))
+    // .catchError((error) => emit(state.copyWith(error: error)));
+  }
+
+  @override
+  Future<void> close() {
+    subscription.cancel();
+    return super.close();
+  }
 }
 
 class VenuesState extends Equatable {

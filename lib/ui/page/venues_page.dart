@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../controller/venues_controller.dart';
+import 'loading_page.dart';
 
 class VenuesPage extends StatelessWidget {
   const VenuesPage({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class VenuesPage extends StatelessWidget {
             if (state.error != null) {
               return const Text('ERROR');
             }
-            return Container();
+            return const LoadingPage();
           },
         ),
       ),
