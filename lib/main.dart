@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'core/design_system/app_teme.dart';
 import 'di/dependency_injection.dart';
 import 'ui/page/venues_page.dart';
 
@@ -20,9 +21,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Venues per location',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: appThemeData,
       home: const VenuesPage(),
     );
   }

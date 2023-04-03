@@ -12,9 +12,9 @@ class VenueDTO {
   final String imageUrl;
 
   factory VenueDTO.fromJson(Map<String, dynamic> json) => VenueDTO(
-        id: json['content_id'],
-        name: json['title'],
-        description: json['description'],
+        id: json['venue']['id'],
+        name: json['venue']['name'],
+        description: json['venue']['short_description'],
         imageUrl: json['image']['url'],
       );
 }

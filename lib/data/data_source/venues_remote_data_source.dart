@@ -26,7 +26,7 @@ class VenuesRemoteDataSource {
 
       if (response.statusCode == 200) {
         final json =
-            jsonDecode(response.body)['sections'][0]['items'] as Iterable;
+            jsonDecode(response.body)['sections'][1]['items'] as Iterable;
         return json
             .take(15)
             .map((venue) => VenueDTO.fromJson(venue))
