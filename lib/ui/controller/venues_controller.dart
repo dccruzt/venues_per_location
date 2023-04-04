@@ -6,13 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../di/dependency_injection.dart';
 import '../../domain/entity/venue_entity.dart';
-import '../../domain/use_case/update_location_use_case.dart';
+import '../../domain/use_case/get_venues_per_location_use_case.dart';
+import '../../domain/use_case/set_favorite_venue_use_case.dart';
 
 class VenuesCubitProvider extends BlocProvider<VenuesCubit> {
   VenuesCubitProvider({super.key, super.child})
       : super(
-            create: (context) =>
-                VenuesCubit(updateLocationUseCase: di())..init());
+            create: (context) => VenuesCubit(
+                  getVenuesPerLocationUseCase: di(),
+                  setFavoriteVenueUseCase: di(),
+                )..init());
 
   static VenuesCubit of(BuildContext context) =>
       BlocProvider.of<VenuesCubit>(context);
@@ -20,25 +23,48 @@ class VenuesCubitProvider extends BlocProvider<VenuesCubit> {
 
 class VenuesCubit extends Cubit<VenuesState> {
   VenuesCubit({
-    required this.updateLocationUseCase,
+    required this.getVenuesPerLocationUseCase,
+    required this.setFavoriteVenueUseCase,
   }) : super(const VenuesState());
 
-  final UpdateLocationUseCase updateLocationUseCase;
+  final GetVenuesPerLocationUseCase getVenuesPerLocationUseCase;
+  final SetFavoriteVenueUseCase setFavoriteVenueUseCase;
 
-  late StreamSubscription<List<VenueEntity>> subscription;
+  late StreamSubscription<List<VenueEntity>> getVenuesPerLocationSubscription;
+  late StreamSubscription<List<String>> setFavoriteSubscription;
 
   void init() {
-    subscription = updateLocationUseCase.call().listen((venues) {
-      print('>>> HOLA');
-      emit(state.copyWith(venues: venues));
-    });
-    // .then((venues) => emit(state.copyWith(venues: venues)))
-    // .catchError((error) => emit(state.copyWith(error: error)));
+    getVenuesPerLocationSubscription =
+        getVenuesPerLocationUseCase.call().listen(
+      (venues) {
+        emit(state.copyWith(venues: venues));
+      },
+      onError: (error) {
+        emit(state.copyWith(error: error));
+      },
+    );
+    setFavoriteSubscription = setFavoriteVenueUseCase.stream.listen(
+      (favoriteIds) {
+        final venuesUpdated = List<VenueEntity>.of(state.venues ?? [])
+            .map((venue) =>
+                venue.copyWith(favorite: favoriteIds.contains(venue.id)))
+            .toList();
+        emit(state.copyWith(venues: venuesUpdated));
+      },
+      onError: (error) {
+        emit(state.copyWith(error: error));
+      },
+    );
+  }
+
+  void setFavorite({required String id, required bool isFavorite}) {
+    setFavoriteVenueUseCase.call(id: id, isFavorite: isFavorite);
   }
 
   @override
   Future<void> close() {
-    subscription.cancel();
+    getVenuesPerLocationSubscription.cancel();
+    setFavoriteSubscription.cancel();
     return super.close();
   }
 }

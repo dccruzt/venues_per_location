@@ -16,6 +16,7 @@ class MapperImpl implements Mapper {
         name: from.name,
         description: from.description,
         imageUrl: from.imageUrl,
+        favorite: false,
       );
 
   @override

@@ -5,6 +5,7 @@ import '../../core/design_system/components/action_row.dart';
 import '../../core/design_system/components/custom_divider.dart';
 import '../../core/design_system/spacings.dart';
 import '../controller/venues_controller.dart';
+import '../widget/favorite_button_icon.dart';
 import 'loading_page.dart';
 
 class VenuesPage extends StatelessWidget {
@@ -12,6 +13,8 @@ class VenuesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(),
       body: VenuesCubitProvider(
@@ -21,21 +24,36 @@ class VenuesPage extends StatelessWidget {
 
             if (venues != null && venues.isNotEmpty) {
               return ListView.separated(
-                itemBuilder: (context, index) => ActionRow(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      venues[index].imageUrl,
-                      fit: BoxFit.cover,
-                      width: x20,
-                      height: x20,
+                itemBuilder: (context, index) {
+                  final venue = venues[index];
+
+                  return ActionRow(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(x2),
+                      child: Image.network(
+                        venue.imageUrl,
+                        fit: BoxFit.cover,
+                        width: x20,
+                        height: x20,
+                      ),
                     ),
-                  ),
-                  primary: Text(venues[index].name, maxLines: 2),
-                  secondary: Text(venues[index].description, maxLines: 2),
-                  trailing: const Icon(Icons.favorite),
-                  onTap: () {},
-                ),
+                    primary: Text(
+                      venue.name,
+                      maxLines: 2,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    secondary: Text(venue.description, maxLines: 2),
+                    trailing: FavoriteButtonIcon(
+                      venue.favorite ? Icons.favorite : Icons.favorite_outline,
+                      onPressed: () =>
+                          VenuesCubitProvider.of(context).setFavorite(
+                        id: venue.id,
+                        isFavorite: !venue.favorite,
+                      ),
+                    ),
+                    onTap: () {},
+                  );
+                },
                 separatorBuilder: (context, index) => const CustomDivider(),
                 itemCount: venues.length,
               );

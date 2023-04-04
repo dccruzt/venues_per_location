@@ -10,14 +10,12 @@ class ActionRow extends StatelessWidget {
     this.primary,
     this.secondary,
     this.onTap,
-    this.hasDivider = true,
   }) : super(key: key);
 
   final Widget? leading;
   final Widget? trailing;
   final Widget? primary;
   final Widget? secondary;
-  final bool hasDivider;
 
   final VoidCallback? onTap;
 
