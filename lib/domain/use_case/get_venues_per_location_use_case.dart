@@ -22,15 +22,19 @@ class GetVenuesPerLocationUseCase implements UseCase<List<VenueEntity>> {
   final LocationsRepository locationsRepository;
   final SetFavoriteVenueUseCase setFavoriteVenueUseCase;
 
+  Future<List<VenueEntity>> _firstCall({
+    required double lat,
+    required double lon,
+  }) async =>
+      (await venuesRepository.getVenues(lat: lat, lon: lon))
+          .checkFavorites(setFavoriteVenueUseCase.controller.value);
+
   @override
   Stream<List<VenueEntity>> call() async* {
     try {
       final locations = await locationsRepository.getLocations();
 
-      yield await venuesRepository.getVenues(
-        lat: locations[0].lat,
-        lon: locations[0].lon,
-      );
+      yield await _firstCall(lat: locations[0].lat, lon: locations[0].lon);
 
       yield* Stream.periodic(const Duration(seconds: _period), (i) {
         final index = (i + 1) % 10;
@@ -39,8 +43,8 @@ class GetVenuesPerLocationUseCase implements UseCase<List<VenueEntity>> {
           lon: locations[index].lon,
         );
       }).asyncMap((value) async {
-        final favorites = setFavoriteVenueUseCase.controller.value;
-        return (await value).checkFavorites(favorites);
+        return (await value)
+            .checkFavorites(setFavoriteVenueUseCase.controller.value);
       });
     } catch (_) {
       rethrow;

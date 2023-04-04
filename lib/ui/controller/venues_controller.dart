@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:venues_per_location/domain/entity/venue_entity_list_ext.dart';
 
 import '../../di/dependency_injection.dart';
 import '../../domain/entity/venue_entity.dart';
@@ -36,24 +37,17 @@ class VenuesCubit extends Cubit<VenuesState> {
   void init() {
     getVenuesPerLocationSubscription =
         getVenuesPerLocationUseCase.call().listen(
-      (venues) {
-        emit(state.copyWith(venues: venues));
-      },
-      onError: (error) {
-        emit(state.copyWith(error: error));
-      },
-    );
+              (venues) => emit(state.copyWith(venues: venues)),
+              onError: (error) => emit(state.copyWith(error: error)),
+            );
     setFavoriteSubscription = setFavoriteVenueUseCase.stream.listen(
-      (favoriteIds) {
-        final venuesUpdated = List<VenueEntity>.of(state.venues ?? [])
-            .map((venue) =>
-                venue.copyWith(favorite: favoriteIds.contains(venue.id)))
-            .toList();
-        emit(state.copyWith(venues: venuesUpdated));
-      },
-      onError: (error) {
-        emit(state.copyWith(error: error));
-      },
+      (favoriteIds) => emit(
+        state.copyWith(
+          venues: List<VenueEntity>.of(state.venues ?? [])
+              .checkFavorites(favoriteIds),
+        ),
+      ),
+      onError: (error) => emit(state.copyWith(error: error)),
     );
   }
 
