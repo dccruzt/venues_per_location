@@ -24,19 +24,19 @@ void main() {
     registerFallbackValue(VenuesStateFake());
   });
 
-  List<VenueEntity> venues = [
+  final venues = [
     VenueEntity(
       id: '1',
       name: 'Venue name 1',
       description: 'Venue description 1',
-      imageUrl: 'https://consumer-static-assets.wolt.com/og_image_mall_web.jpg',
+      imageUrl: 'image://venue-1',
       favorite: false,
     ),
     VenueEntity(
       id: '2',
       name: 'Venue name 2',
       description: 'Venue description 2',
-      imageUrl: 'https://consumer-static-assets.wolt.com/og_image_mall_web.jpg',
+      imageUrl: 'image://venue-2',
       favorite: true,
     ),
   ];
