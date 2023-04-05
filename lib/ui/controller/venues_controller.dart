@@ -37,9 +37,13 @@ class VenuesCubit extends Cubit<VenuesState> {
   void init() {
     getVenuesPerLocationSubscription =
         getVenuesPerLocationUseCase.call().listen(
-              (venues) => emit(state.copyWith(venues: venues)),
-              onError: (error) => emit(state.copyWith(error: error)),
+              (venues) => venues.isEmpty
+                  ? emit(state.copyWith(loading: true))
+                  : emit(state.copyWith(loading: false, venues: venues)),
+              onError: (error) =>
+                  emit(state.copyWith(loading: false, error: error)),
             );
+
     setFavoriteSubscription = setFavoriteVenueUseCase.stream.listen(
       (favoriteIds) => emit(
         state.copyWith(
@@ -64,20 +68,23 @@ class VenuesCubit extends Cubit<VenuesState> {
 }
 
 class VenuesState extends Equatable {
-  const VenuesState({this.venues, this.error});
+  const VenuesState({this.loading, this.venues, this.error});
 
+  final bool? loading;
   final List<VenueEntity>? venues;
   final Object? error;
 
   VenuesState copyWith({
+    bool? loading,
     List<VenueEntity>? venues,
     Object? error,
   }) =>
       VenuesState(
+        loading: loading ?? this.loading,
         venues: venues ?? this.venues,
         error: error ?? this.error,
       );
 
   @override
-  List<Object?> get props => [venues, error];
+  List<Object?> get props => [loading, venues, error];
 }
