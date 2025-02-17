@@ -53,6 +53,7 @@ void main() {
       );
 
   testWidgets('venues screen loaded renders well', (WidgetTester tester) async {
+    // using mocktail to simulate the state
     when(() => venuesCubit.state).thenReturn(
       VenuesState(venues: venues),
     );
