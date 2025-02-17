@@ -8,10 +8,10 @@ import 'favorite_button_icon.dart';
 
 class VenuesListView extends StatelessWidget {
   const VenuesListView({
-    Key? key,
+    super.key,
     required this.venues,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final List<VenueEntity> venues;
   final Function(String id, bool isFavorite) onPressed;

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class LoadingWrap extends StatelessWidget {
   const LoadingWrap({
-    Key? key,
+    super.key,
     required this.child,
     required this.visible,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final bool visible;

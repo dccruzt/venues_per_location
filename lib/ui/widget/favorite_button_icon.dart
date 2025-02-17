@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class FavoriteButtonIcon extends StatelessWidget {
   const FavoriteButtonIcon(
     this.iconData, {
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final IconData iconData;
   final VoidCallback onPressed;

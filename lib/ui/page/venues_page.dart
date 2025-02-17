@@ -7,7 +7,7 @@ import '../widget/loading_wrap.dart';
 import '../widget/venues_list_view.dart';
 
 class VenuesPage extends StatelessWidget {
-  const VenuesPage({Key? key}) : super(key: key);
+  const VenuesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class VenuesPage extends StatelessWidget {
 }
 
 class VenuesScreen extends StatelessWidget {
-  const VenuesScreen({Key? key}) : super(key: key);
+  const VenuesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
